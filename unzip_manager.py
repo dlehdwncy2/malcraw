@@ -104,24 +104,16 @@ def unzip_sample(temp_sample_path,_password=None):
                     unzip_sample(unpack_file_path,_password)
         '''
     def etc_unpack():
-        print(temp_sample_path)
-        temp_sample_dir_path=temp_sample_path.split('.')[0]
-        print(temp_sample_dir_path)
+        #temp_sample_dir_path=temp_sample_path.split('.')[0]
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(4)
-        Archive(temp_sample_path).extractall(c_c.PATH_TEMP)
         try:
-            pass
-            #print(temp_sample_path)
-        #    Archive(temp_sample_path).extractall(temp_sample_dir_path)
+            Archive(temp_sample_path).extractall(c_c.PATH_TEMP)
         except:
-            print(filetype.guess(temp_sample_dir_path).extension)
-
             return
 
     def _unrar():
         rf = rarfile.RarFile(temp_sample_path)
-        rf.extractall()
         rf.extractall(path=c_c.PATH_TEMP,pwd=_password)    
     
     if kind!=None:
