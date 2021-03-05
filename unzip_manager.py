@@ -65,6 +65,7 @@ def unzip_manager(temp_sample_list):
             unzip_sample(temp_sample)
         temp_sample_list=[os.path.join(c_c.PATH_TEMP,fname) for fname in [fname for fname in os.listdir(c_c.PATH_TEMP)]]
         #만약, 압축 해제 했는데 zip이 있다면 리스트가 있을 것이고, 없으면 빈리스트
+        temp_sample_list=[temp_sample for temp_sample in temp_sample_list if not os.path.isdir(temp_sample)]
         zip_list=[0 for temp_sample in temp_sample_list if filetype.guess(temp_sample) in unzip_list]
         if zip_list==[]:return temp_sample_list 
 
@@ -73,7 +74,10 @@ def unzip_sample(temp_sample_path,_password=None):
     dir_path=os.path.dirname(temp_sample_path)
     if os.path.isdir(temp_sample_path):return
     if os.path.exists(temp_sample_path)!=True:return
-    kind=filetype.guess(temp_sample_path)
+    try:
+        kind=filetype.guess(temp_sample_path)
+    except Exception:
+        return
     def _zip():
         try:
             zFile=zipfile.ZipFile(temp_sample_path)
@@ -96,13 +100,7 @@ def unzip_sample(temp_sample_path,_password=None):
             #unpack_file_path=os.path.join(dir_path,zfile_name)
             #unpack_file_path_list.append(unpack_file_path)
         zFile.close()
-        '''
-        for unpack_file_path in unpack_file_path_list:
-            if os.path.isfile(unpack_file_path):
-                kind=filetype.guess(unpack_file_path)
-                if kind!=None and kind in unzip_list:
-                    unzip_sample(unpack_file_path,_password)
-        '''
+
     def etc_unpack():
         #temp_sample_dir_path=temp_sample_path.split('.')[0]
         signal.signal(signal.SIGALRM, handler)
@@ -114,18 +112,24 @@ def unzip_sample(temp_sample_path,_password=None):
 
     def _unrar():
         rf = rarfile.RarFile(temp_sample_path)
-        rf.extractall(path=c_c.PATH_TEMP,pwd=_password)    
-    
+        try:
+            rf.extractall(path=c_c.PATH_TEMP,pwd=_password)    
+        except:
+            try:
+                rf.extractall(path=c_c.PATH_TEMP)
+            except:
+                return
+
     if kind!=None:
-        
-        if kind.extension=='zip':
-            _zip()
-        
-        elif kind.extension=='rar':
-            _unrar()
-        elif kind.extension in unzip_list:
-            etc_unpack()
-        
+        try:
+            if kind.extension=='zip':
+                _zip()
+            elif kind.extension=='rar':
+                _unrar()
+            elif kind.extension in unzip_list:
+                etc_unpack()
+        except Exception:
+            pass
         if kind.extension in unzip_list:
             try:
                 os.remove(temp_sample_path)

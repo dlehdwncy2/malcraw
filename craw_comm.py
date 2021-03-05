@@ -1,5 +1,9 @@
 
+#설치 필요
+'''
+sudo apt-get install unrar
 
+'''
 ERROR_CODE=-1
 SUCCESS_CODE=1
 
@@ -14,3 +18,4 @@ PATH_OTHERS="/home/leedongju/_data_set/OTHERS"
 
 #임시저장된 뒤 압축해제 후 위 PATH, PATH_OTHERS로 이동
 PATH_TEMP="/home/leedongju/_data_set/TEMP"
+
